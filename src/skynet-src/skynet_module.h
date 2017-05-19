@@ -16,7 +16,7 @@ struct skynet_module {
 	skynet_dl_release release;
 	skynet_dl_signal signal;
 };
-
+struct skynet_module * skynet_module_create(const char * name,skynet_dl_create module_create,skynet_dl_init module_init,skynet_dl_release module_release,skynet_dl_signal module_signal);
 void skynet_module_insert(struct skynet_module *mod);
 struct skynet_module * skynet_module_query(const char * name);
 void * skynet_module_instance_create(struct skynet_module *);

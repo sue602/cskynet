@@ -12,8 +12,6 @@
 
 #define MAX_MODULE_TYPE 32
 
-#pragma pack (1)
-
 struct modules {
 	int count;
 	struct spinlock lock;
@@ -144,13 +142,10 @@ skynet_module_create(const char * name,skynet_dl_create module_create,skynet_dl_
 
 	if (result == NULL && M->count < MAX_MODULE_TYPE) {
 		int index = M->count;
-		M->m[index].name = name;
-
 		M->m[index].create = module_create;
 		M->m[index].init = module_init;
 		M->m[index].release = module_release;
 		M->m[index].signal = module_signal;
-
 		M->m[index].name = skynet_strdup(name);
 		M->count ++;
 		result = &M->m[index];
