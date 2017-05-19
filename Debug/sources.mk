@@ -15,6 +15,5 @@ C_DEPS :=
 SUBDIRS := \
 src \
 src/module/game \
-src/service-src \
 src/skynet-src \
 

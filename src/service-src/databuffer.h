@@ -70,6 +70,7 @@ databuffer_read(struct databuffer *db, struct messagepool *mp, void * buffer, in
 		int bsz = current->size - db->offset;
 		if (bsz > sz) {
 			memcpy(buffer, current->buffer + db->offset, sz);
+			printf("buffer == %s \n",buffer);
 			db->offset += sz;
 			return;
 		}

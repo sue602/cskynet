@@ -174,10 +174,15 @@ _forward(struct gate *g, struct connection * c, int size) {
 		skynet_send(ctx, 0, g->broker, g->client_tag | PTYPE_TAG_DONTCOPY, 1, temp, size);
 		return;
 	}
-	if (c->agent) {
+	if(1){
+	//if (c->agent) {
 		void * temp = skynet_malloc(size);
 		databuffer_read(&c->buffer,&g->mp,temp, size);
+		char output[32]={0};
+		memcpy(output,temp,size);
+		printf("string ======> %s\n",output);
 		skynet_send(ctx, c->client, c->agent, g->client_tag | PTYPE_TAG_DONTCOPY, 1 , temp, size);
+		skynet_socket_send(g->ctx,c->id,temp, size);
 	} else if (g->watchdog) {
 		char * tmp = skynet_malloc(size + 32);
 		int n = snprintf(tmp,32,"%d data ",c->id);

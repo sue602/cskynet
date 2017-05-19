@@ -10,6 +10,7 @@
 #include "skynet_daemon.h"
 #include "skynet_harbor.h"
 #include "service_logger.h"
+#include "service_gate.h"
 
 #include <pthread.h>
 #include <unistd.h>
@@ -245,11 +246,6 @@ bootstrap(struct skynet_context * logger, const char * cmdline) {
 	}
 }
 
-skynet_dl_create module_create = logger_create;
-skynet_dl_init module_init =logger_init;
-skynet_dl_release module_release =logger_release;
-skynet_dl_signal module_signal = NULL;
-
 void 
 skynet_start(struct skynet_config * config) {
 	// register SIGHUP for log file reopen
@@ -272,14 +268,22 @@ skynet_start(struct skynet_config * config) {
 	skynet_socket_init();
 	skynet_profile_enable(config->profile);
 
-	skynet_module_create(config->logservice,module_create,module_init,module_release,module_signal);
-	struct skynet_context *ctx = skynet_context_new2(config->logservice, config->logger);
-	if (ctx == NULL) {
+	skynet_module_create(config->logservice,logger_create,logger_init,logger_release,NULL);
+	struct skynet_context *logctx = skynet_context_new2(config->logservice, config->logger);
+	if (logctx == NULL) {
 		fprintf(stderr, "Can't launch %s service\n", config->logservice);
 		exit(1);
 	}
 
-	//bootstrap(ctx, config->bootstrap);
+	//gate启动
+	skynet_module_create("gate",gate_create,gate_init,gate_release,NULL);
+	struct skynet_context * gatectx = skynet_context_new2("gate", "S ! 0.0.0.0:8001 0 10240");
+	if (gatectx == NULL) {
+		fprintf(stderr, "Can't launch gate service\n");
+		exit(1);
+	}
+
+//	bootstrap(ctx, config->bootstrap);
 
 	start(config->thread);
 

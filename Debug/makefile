@@ -9,7 +9,6 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include src/skynet-src/subdir.mk
--include src/service-src/subdir.mk
 -include src/module/game/subdir.mk
 -include src/subdir.mk
 -include subdir.mk
@@ -31,7 +30,7 @@ all: cskynet
 # Tool invocations
 cskynet: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
-	@echo 'Invoking: MacOS X C Linker'
+	@echo 'Invoking: Cross GCC Linker'
 	gcc  -o "cskynet" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '

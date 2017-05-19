@@ -61,7 +61,7 @@ forward_message(int type, bool padding, struct socket_message * result) {
 	message.session = 0;
 	message.data = sm;
 	message.sz = sz | ((size_t)PTYPE_SOCKET << MESSAGE_TYPE_SHIFT);
-	
+	printf("read length = %d ,buff=%s \n",sm->ud,result->data);
 	if (skynet_context_push((uint32_t)result->opaque, &message)) {
 		// todo: report somewhere to close socket
 		// don't call skynet_socket_close here (It will block mainloop)

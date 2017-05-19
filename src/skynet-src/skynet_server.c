@@ -186,7 +186,7 @@ skynet_context_new2(const char * name, const char *param) {
 	struct skynet_module * mod = skynet_module_query(name);
 	if (mod == NULL)
 		return NULL;
-	printf("result str =%llx,%x  \n",mod,mod->name);
+	printf("skynet_context_new = %s  \n",mod->name);
 	void *inst = skynet_module_instance_create(mod);
 	if (inst == NULL)
 		return NULL;
