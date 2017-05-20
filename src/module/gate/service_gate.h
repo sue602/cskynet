@@ -174,15 +174,10 @@ _forward(struct gate *g, struct connection * c, int size) {
 		skynet_send(ctx, 0, g->broker, g->client_tag | PTYPE_TAG_DONTCOPY, 1, temp, size);
 		return;
 	}
-	if(1){
-	//if (c->agent) {
+	if (c->agent) {
 		void * temp = skynet_malloc(size);
 		databuffer_read(&c->buffer,&g->mp,temp, size);
-		char output[32]={0};
-		memcpy(output,temp,size);
-		printf("string ======> %s\n",output);
 		skynet_send(ctx, c->client, c->agent, g->client_tag | PTYPE_TAG_DONTCOPY, 1 , temp, size);
-		skynet_socket_send(g->ctx,c->id,temp, size);
 	} else if (g->watchdog) {
 		char * tmp = skynet_malloc(size + 32);
 		int n = snprintf(tmp,32,"%d data ",c->id);
@@ -267,8 +262,12 @@ dispatch_socket_message(struct gate *g, const struct skynet_socket_message * mes
 			memcpy(c->remote_name, message+1, sz);
 			c->remote_name[sz] = '\0';
 			_report(g, "%d open %d %s:0",c->id, c->id, c->remote_name);
-			skynet_error(ctx, "socket open: %x", c->id);
-			skynet_socket_start(ctx,c->id);
+			skynet_error(ctx, "socket open: %x\n", c->id);
+
+			//add by vincent
+			char cmd[32] = {0};
+			int n = snprintf(cmd,32,"start %d",c->id);
+			_ctrl(g,cmd,6+n);
 		}
 		break;
 	case SKYNET_SOCKET_TYPE_WARNING:

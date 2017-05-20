@@ -263,7 +263,7 @@ dispatch_socket_message(struct gate *g, const struct skynet_socket_message * mes
 			c->remote_name[sz] = '\0';
 			_report(g, "%d open %d %s:0",c->id, c->id, c->remote_name);
 			skynet_error(ctx, "socket open: %x", c->id);
-			skynet_socket_start(ctx,c->id);
+			//skynet_socket_start(ctx,c->id);
 		}
 		break;
 	case SKYNET_SOCKET_TYPE_WARNING:

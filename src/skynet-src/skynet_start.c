@@ -11,6 +11,7 @@
 #include "skynet_harbor.h"
 #include "service_logger.h"
 #include "service_gate.h"
+#include "service_watchdog.h"
 
 #include <pthread.h>
 #include <unistd.h>
@@ -275,9 +276,23 @@ skynet_start(struct skynet_config * config) {
 		exit(1);
 	}
 
+	//watchdog
+	skynet_module_create("watchdog",watchdog_create,watchdog_init,watchdog_release,NULL);
+	struct skynet_context * watchdogctx = skynet_context_new2("watchdog",NULL);
+	if (watchdogctx == NULL) {
+		fprintf(stderr, "Can't launch watchdog service\n");
+		exit(1);
+	}
+
 	//gate启动
+	char * watchdog_names = ".watchdog";
+	char * LISTEN = "0.0.0.0";
+	int PORT = 8001;
+	int MAX_CLIENT =10240;
+	char gate_start_conf[64] = {0};
+	sprintf(gate_start_conf,"S %s %s:%d 0 %d",watchdog_names,LISTEN,PORT,MAX_CLIENT);
 	skynet_module_create("gate",gate_create,gate_init,gate_release,NULL);
-	struct skynet_context * gatectx = skynet_context_new2("gate", "S ! 0.0.0.0:8001 0 10240");
+	struct skynet_context * gatectx = skynet_context_new2("gate", gate_start_conf);
 	if (gatectx == NULL) {
 		fprintf(stderr, "Can't launch gate service\n");
 		exit(1);

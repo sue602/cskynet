@@ -1237,7 +1237,6 @@ socket_server_poll(struct socket_server *ss, struct socket_message * result, int
 				ss->checkctrl = 0;
 			}
 		}
-		printf("ss->event_fd==%d event index=%d event_n=%d \n",ss->event_fd,ss->event_index,ss->event_n);
 		if (ss->event_index == ss->event_n) {
 			ss->event_n = sp_wait(ss->event_fd, ss->ev, MAX_EVENT);
 			ss->checkctrl = 1;
@@ -1288,7 +1287,6 @@ socket_server_poll(struct socket_server *ss, struct socket_message * result, int
 						return SOCKET_UDP;
 					}
 				}
-				printf("socket type ==%d \n",type);
 				if (e->write && type != SOCKET_CLOSE && type != SOCKET_ERR) {
 					// Try to dispatch write message next step if write flag set.
 					e->read = false;
